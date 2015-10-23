@@ -2,9 +2,9 @@ package main
 
 import (
 	//	"fmt"
-	"github.com/vladshub/hydra-node/players"
-	"github.com/vladshub/hydra-node/discovery"
 	"github.com/vladshub/hydra-node/control"
+	"github.com/vladshub/hydra-node/discovery"
+	"github.com/vladshub/hydra-node/players"
 )
 
 func main() {
@@ -40,7 +40,6 @@ func main() {
 	}
 
 	control.Listen()
-
 
 	// Setup HTTP server
 	//	router := gin.Default()

@@ -1,9 +1,9 @@
 package control
 
 import (
+	"errors"
 	"github.com/vladshub/hydra-node/fsmanager"
 	"github.com/vladshub/hydra-node/players"
-	"errors"
 )
 
 type Control interface {

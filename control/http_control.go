@@ -18,7 +18,7 @@ func NewHttpControl(player *players.Player, fsmanager *fsmanager.FsManager) {
 	return HttpControl{
 		player:    player,
 		fsmanager: fsmanager,
-		engien: r,
+		engien:    r,
 	}
 }
 

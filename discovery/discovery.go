@@ -1,4 +1,5 @@
 package discovery
+
 import "errors"
 
 type Discovery interface {

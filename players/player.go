@@ -1,4 +1,5 @@
 package players
+
 import "errors"
 
 type Player interface {
@@ -24,8 +25,7 @@ type Player interface {
 	SubtitlesUse(path string) (bool, error)
 }
 
-
-func PlayerFactory(player_type string ) (Player, error) {
+func PlayerFactory(player_type string) (Player, error) {
 	switch player_type {
 	case "OmxPlayer":
 		return NewOmxPlayer()
