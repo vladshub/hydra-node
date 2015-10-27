@@ -1,4 +1,10 @@
 package fsmanager
 
-type FsManager interface {
+//import "runtime"
+
+type FileSystemManagerI interface {
+}
+
+func FileSystemManagerFuctory() {
+
 }

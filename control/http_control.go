@@ -7,21 +7,21 @@ import (
 )
 
 type HttpControl struct {
-	player    *players.Player
-	fsmanager *fsmanager.FsManager
+	player    *players.PlayerI
+	fsmanager *fsmanager.FileSystemManagerI
 	engien    *gin.Engine
 }
 
-func NewHttpControl(player *players.Player, fsmanager *fsmanager.FsManager) {
+func NewHttpControl(player *players.PlayerI, fsmanager *fsmanager.FileSystemManagerI) (Control) {
 	r := gin.Default()
 
-	return HttpControl{
+	return &HttpControl{
 		player:    player,
 		fsmanager: fsmanager,
 		engien:    r,
 	}
 }
 
-func (ctl *HttpControl) Listen(addr string) error {
+func (ctl HttpControl) Listen(addr string) error {
 	return ctl.engien.Run(addr)
 }

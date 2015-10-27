@@ -11,8 +11,8 @@ type Control interface {
 }
 
 func ControlFactory(ctlType string,
-	player *players.Player,
-	fsmanager *fsmanager.FsManager) (Control, error) {
+	player *players.PlayerI,
+	fsmanager *fsmanager.FileSystemManagerI) (Control, error) {
 	switch ctlType {
 	case "HttpControl":
 		return NewHttpControl(player, fsmanager), nil

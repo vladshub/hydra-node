@@ -8,7 +8,7 @@ import (
 )
 
 type OmxPlayer struct {
-	supportedTypes regexp.Regexp
+	supportedTypes *regexp.Regexp
 	binPath        string
 
 	currentFile string
@@ -21,12 +21,11 @@ type OmxPlayer struct {
 	commands map[string]string
 }
 
-func NewOmxPlayer() (Player, error) {
-
-	player := OmxPlayer{
-		supportedTypes: regexp.MustCompile(`.(avi|mpg|mov|flv|wmv|asf|mpeg|m4v|divx|mp4|mkv)$`),
+func NewOmxPlayer() (PlayerI, error) {
+	player := &OmxPlayer{
+		supportedTypes: regexp.MustCompile(".(avi|mpg|mov|flv|wmv|asf|mpeg|m4v|divx|mp4|mkv)$"),
 		binPath:        "/usr/bin/omxplayer",
-		command: {
+		commands: map[string]string{
 			"pause":             "p",            // Pause/continue playback
 			"stop":              "q",            // Stop playback and exit
 			"volume_up":         "+",            // Change volume by +3dB
@@ -39,10 +38,10 @@ func NewOmxPlayer() (Player, error) {
 		},
 	}
 	player.omxListen()
-	return player
+	return player, nil
 }
 
-func (omx *OmxPlayer) omxListen() error {
+func (omx OmxPlayer) omxListen() error {
 	omx.command = make(chan string)
 
 	for {
@@ -63,13 +62,13 @@ func (omx *OmxPlayer) omxListen() error {
 	}
 }
 
-func (omx *OmxPlayer) omxWrite(command string) {
+func (omx OmxPlayer) omxWrite(command string) {
 	if omx.omxIn != nil {
 		io.WriteString(omx.omxIn, omx.commands[command])
 	}
 }
 
-func (omx *OmxPlayer) Play(path string) (bool, error) {
+func (omx OmxPlayer) Play(path string) (bool, error) {
 	omx.player = exec.Command(
 		omx.binPath, // path to omxplayer executable
 		"--refresh", // adjust framerate/resolution to video
@@ -105,66 +104,68 @@ func (omx *OmxPlayer) Play(path string) (bool, error) {
 		return false, err
 	}
 
-	omx.omxCleanup()
-	return true
+	omx.Reset()
+	return true, nil
 }
 
 // Reset internal state and stop any running processes
-func (omx *OmxPlayer) omxCleanup() {
+func (omx OmxPlayer) Reset() (error) {
 	omx.player = nil
 	omx.omxIn = nil
 	omx.omxKill()
+	return nil
 }
 
 // Terminate any running omxplayer processes. Fixes random hangs.
-func (omx *OmxPlayer) omxKill() {
+func (omx OmxPlayer) omxKill() {
 	exec.Command("killall", "omxplayer.bin").Output()
 	exec.Command("killall", "omxplayer").Output()
 }
 
-func (omx *OmxPlayer) CanPlay(path string) bool {
+// CanPlay returns true or false if the file can be played
+func (omx OmxPlayer) CanPlay(path string) bool {
 	if omx.supportedTypes.Match([]byte(path)) {
 		return true
 	}
 	return false
 }
 
-func (omx *OmxPlayer) Pause() (bool, error) {
-	return false
+func (omx OmxPlayer) Pause() (bool, error) {
+	return false, nil
 }
-func (omx *OmxPlayer) Stop() (bool, error) {
-	return false
+func (omx OmxPlayer) Stop() (bool, error) {
+	return false, nil
 }
 
 //Seek Controlls
-func (omx *OmxPlayer) SeekBack() (bool, error) {
-	return false
+func (omx OmxPlayer) SeekBack() (bool, error) {
+	return false, nil
 }
-func (omx *OmxPlayer) SeekBackFast() (bool, error) {
-	return false
+func (omx OmxPlayer) SeekBackFast() (bool, error) {
+	return false, nil
 }
-func (omx *OmxPlayer) SeekForward() (bool, error) {
-	return false
+func (omx OmxPlayer) SeekForward() (bool, error) {
+	return false, nil
 }
-func (omx *OmxPlayer) SeekForwardFast() (bool, error) {
-	return false
+func (omx OmxPlayer) SeekForwardFast() (bool, error) {
+	return false, nil
 }
 
 //Volume Controlls
-func (omx *OmxPlayer) VolumeUp(amount int) (bool, error) {
-	return false
+func (omx OmxPlayer) VolumeUp(amount int) (bool, error) {
+	return false, nil
 }
-func (omx *OmxPlayer) VolumeDown(amount int) (bool, error) {
-	return false
+func (omx OmxPlayer) VolumeDown(amount int) (bool, error) {
+	return false, nil
 }
 
 //Subtitle Controlls
-func (omx *OmxPlayer) SubtitlesOn() (bool, error) {
-	return false
+func (omx OmxPlayer) SubtitlesOn() (bool, error) {
+	return false, nil
 }
-func (omx *OmxPlayer) SubtitlesOff() (bool, error) {
-	return false
+func (omx OmxPlayer) SubtitlesOff() (bool, error) {
+	return false, nil
 }
-func (omx *OmxPlayer) SubtitlesUse(path string) (bool, error) {
-	return false
+func (omx OmxPlayer) SubtitlesUse(path string) (bool, error) {
+	return false, nil
 }

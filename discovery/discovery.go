@@ -2,11 +2,11 @@ package discovery
 
 import "errors"
 
-type Discovery interface {
+type DiscoveryI interface {
 	Register() error
 }
 
-func DiscoveryFuctory(discovery_type string, component_name string, service_name string) (Discovery, error) {
+func DiscoveryFuctory(discovery_type string, component_name string, service_name string) (DiscoveryI, error) {
 	switch discovery_type {
 	case "mDNS":
 		return NewMdnsServer(component_name, service_name)

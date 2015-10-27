@@ -2,7 +2,7 @@ package discovery
 
 import (
 	"github.com/hashicorp/mdns"
-	"os"
+	"fmt"
 )
 
 type Mdns struct {
@@ -11,23 +11,23 @@ type Mdns struct {
 }
 
 func NewMdnsServer(component_name string, service_name string) (*Mdns, error) {
-	return Mdns{
+	return &Mdns{
 		componentName: component_name,
 		serviceName:   service_name,
-	}
+	}, nil
+
 }
 
 func (dir *Mdns) Register() error {
-	host, _ := os.Hostname()
-	service, _ := mdns.NewMDNSService(host,
-		"_client._hydra._tcp",
+	service, err := mdns.NewMDNSService("hydra_client",
+		"_hydra._tcp",
 		"",
-		host,
+		"",
 		8000,
 		nil,
 		[]string{dir.serviceName, dir.componentName},
 	)
-
+	fmt.Println(service, err)
 	// Create the mDNS server, defer shutdown
 	server, err := mdns.NewServer(&mdns.Config{Zone: service})
 	if err != nil {
